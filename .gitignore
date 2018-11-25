@@ -1,0 +1,15 @@
+
+data_collecting_scripts/api\.sublime-workspace
+
+\.ipynb_checkpoints/
+
+\.idea/
+
+*.xml
+
+crs\.iml
+
+test_jupyter\.ipynb
+
+hazem_model_test\.ipynb
+

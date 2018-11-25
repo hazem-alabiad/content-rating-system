@@ -1,0 +1,40 @@
+{
+  "name": "crs",
+  "version": "1.0.0",
+  "description": "Design Project",
+  "main": "index.html",
+  "scripts": {
+    "start": "npm run watch:all",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lite": "lite-server",
+    "sass": "node-sass -o sass/ css/",
+    "watch:sass": "onchange 'sass/*.scss' -- npm run sass",
+    "watch:all": "parallelshell 'npm run watch:sass' 'npm run lite'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hazem94/crs.git"
+  },
+  "keywords": [
+    "Python",
+    "ML",
+    "TL",
+    "CRS"
+  ],
+  "author": "Hazem. W",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Hazem94/crs/issues"
+  },
+  "homepage": "https://github.com/Hazem94/crs#readme",
+  "devDependencies": {
+    "bootstrap": "^4.1.3",
+    "jquery": "^3.3.1",
+    "lite-server": "^2.4.0",
+    "node-sass": "^4.10.0",
+    "onchange": "^5.1.2",
+    "parallelshell": "^3.0.2",
+    "popper.js": "^1.14.5"
+  },
+  "dependencies": {}
+}
