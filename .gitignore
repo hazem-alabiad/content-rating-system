@@ -11,5 +11,4 @@ crs\.iml
 
 test_jupyter\.ipynb
 
-hazem_model_test\.ipynb
-
+hazem_doc2vec\.pickle
