@@ -1,58 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <style>
-  body {
+    body {
     background-image: url("water.jpg");
   }
   </style>
   <title>Automated Rating For Kids Book</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
 </head>
+
 <body>
-    <nav class="navbar navbar-inverse">
-        <div class="container-fluid">
-          <div class="navbar-header">
-            <a class="btn btn-danger navbar-btn" href="#">AHMA</a>
-          </div>
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="">Home</a></li>
-            <li><a href="aboutUs">About Us</a></li>
-            <li><a href="ContactUs">Contact Us</a></li>
+  <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="btn btn-danger navbar-btn" href="#">AHMA</a>
+      </div>
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="">Home</a></li>
+        <li><a href="aboutUs">About Us</a></li>
+        <li><a href="ContactUs">Contact Us</a></li>
 
-          </ul>
-        </div>
-      </nav>
-        
-    
+      </ul>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="jumbotron">
+      <h1>Automated Rating For Kids Book</h1>
 
+    </div>
+    <form class="btn btn-primary center-block" id="input_form" method="POST" enctype="multipart/form-data" action="/rate/">
+      {% csrf_token %}
+      <div class="form-group mx-sm-3 mb-2">
+        <label class="sr-only">book</label>
+        <input type="file" class="form-control" id="input_book" placeholder="Insert your Book" name="uploaded_book" required>
+      </div>
+      <button type="submit" class="btn btn-primary mb-2" id="submit_button">Upload</button>
+    </form>
 
-
-<div class="container">
-  <div class="jumbotron">
-    <h1>Automated Rating For Kids Book</h1>      
-   
   </div>
-  <form class="btn btn-primary center-block">
-        
-        <div class="form-group mx-sm-3 mb-2">
-          <label for="inputbook" class="sr-only">book</label>
-          <input type="file" class="form-control" id="inputbook2" placeholder="Insert your Book">
-        </div>
-        <button type="submit" class="btn btn-primary mb-2">Upload</button>
-      </form>
-
-        </div>
-</div>
-
-
-
-      
-
-
+  </div>
 </body>
 </html>
+<!-- <script lang="javascript">
+      window.CSRF_TOKEN = "{{ csrf_token }}"
+</script>
+<script lang="javascript">
+    $(document).ready(function () {
+      $("#input_form").on("submit", function (event) {
+        event.preventDefault();
+        const selected_file = $("#input_book")[0].files[0];
+        console.log(selected_file);
+        $.ajax({
+          url : "/rate/",
+          type : "POST",
+          data : {
+            "file": "selected_file",
+             csrfmiddlewaretoken: '{{ csrf_token }}',
+          },
+          success: function(){
+            console.log("request is done");
+          },
+          async : false,
+        });
+  
+        /* var oReq = new XMLHttpRequest();
+        oReq.open("POST", "/rate/", true);
+        oReq.onload = function (oEvent) {
+          console.log("file_uploaded!");
+        };
+  
+        oReq.send(file);
+      }); */
+    });
+  });
+
+  </script> -->

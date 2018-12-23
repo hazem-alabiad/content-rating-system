@@ -23,4 +23,5 @@ urlpatterns = [
     path("", views.CrsApp.as_view(), name="index"),
     path("aboutUs/", include("aboutUs.urls")),
     path("ContactUs/", include("contactUs.urls")),
+    path("rate/", include("rater.urls")),
 ]
