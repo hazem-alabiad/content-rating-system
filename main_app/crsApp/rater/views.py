@@ -35,7 +35,7 @@ class Rater(TemplateView):
                     "message" : "Error while opening the book, make sure that the book exist and its name does not contain spaces!"
                 }
                 return render(request, "./rater/error.html", context=response)
-            if text_file == "01":
+            elif text_file == "01":
                 response = {
                     "message" : "Book is  corraped or with no format, please try another book!"
                 }

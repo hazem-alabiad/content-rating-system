@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rater',
     'aboutUs',
     'contactUs',
+    'feedback',
 ]
 
 MIDDLEWARE = [
