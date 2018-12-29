@@ -13,6 +13,7 @@ def convert_to_text(file_path):
     try:
         file_name = file_path.split("/")[2]
         file_format = file_name.split(".")[1]
+    
     except:
         return "01"
 
@@ -23,11 +24,13 @@ def convert_to_text(file_path):
     
     try:
         #try to open the file
+        print(file_path)
         input_file = open(os.getcwd() + file_path, "r")
         try:
             text = textract.process(os.getcwd() + file_path)
-            text = text.decode("utf-8")
+            text = text.decode("utf-8", 'ignore')
             return text
+        
         except:
             return "11"
     except:

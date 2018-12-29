@@ -19,9 +19,9 @@ from . import views
 from django.urls import path,include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path("", views.CrsApp.as_view(), name="index"),
-    path("aboutUs/", include("aboutUs.urls")),
-    path("ContactUs/", include("contactUs.urls")),
-    path("rate/", include("rater.urls")),
+    path("aboutUs/", include("aboutUs.urls"), name="aboutUs"),
+    path("contactUs/", include("contactUs.urls"), name="contactUs"),
+    path("rate/", include("rater.urls"), name="rate"),
+    path('admin/', admin.site.urls),
 ]

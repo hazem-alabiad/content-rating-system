@@ -25,7 +25,7 @@
       <ul class="nav navbar-nav">
         <li class="active"><a href="">Home</a></li>
         <li><a href="aboutUs">About Us</a></li>
-        <li><a href="ContactUs">Contact Us</a></li>
+        <li><a href="contactUs">Contact Us</a></li>
 
       </ul>
     </div>
@@ -33,17 +33,20 @@
   <div class="container">
     <div class="jumbotron">
       <h1>Automated Rating For Kids Book</h1>
-
     </div>
-    <form class="btn btn-primary center-block" id="input_form" method="POST" enctype="multipart/form-data" action="/rate/">
+    <form class="btn center-block" id="input_form" method="POST" enctype="multipart/form-data" action="/rate/">
       {% csrf_token %}
       <div class="form-group mx-sm-3 mb-2">
         <label class="sr-only">book</label>
         <input type="file" class="form-control" id="input_book" placeholder="Insert your Book" name="uploaded_book" required>
       </div>
       <button type="submit" class="btn btn-primary mb-2" id="submit_button">Upload</button>
+      <br>
+      <br>
+      <input type="radio" name="save" value="save" checked><strong>&nbsp Save the book in our database for later improvement of the system</strong><br>
+      <input type="radio" name="save" value="dont_save"><strong>&nbsp Don't save the book in our database</strong>
     </form>
-
+    <br>
   </div>
   </div>
 </body>

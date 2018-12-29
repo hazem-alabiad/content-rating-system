@@ -19,18 +19,19 @@
             <a class="btn btn-danger navbar-btn" href="#">AHMA</a>
           </div>
           <ul class="nav navbar-nav">
-            <li class="active" ><a href="../">Home</a></li>
-            <li><a href="../aboutUs">About Us</a></li>
-            <li><a href="../contactUs">Contact Us</a></li>
+            <li class="active" ><a href="../../">Home</a></li>
+            <li><a href="../../aboutUs">About Us</a></li>
+            <li><a href="../../contactUs">Contact Us</a></li>
           </ul>
         </div>
       </nav>
       <div class="container">
-      {% if message %}
-        <div class="alert alert-danger">
-            <strong>Error!</strong> {{message}}
-        </div>
-      </div>
+      {% if message%}
+          <div class="alert alert-success">
+            <strong>Success!</strong> {{message}} <strong>{{rating}}</strong>
+          </div>
       {% endif %}
+      </div>
+
 </body>
 </html>

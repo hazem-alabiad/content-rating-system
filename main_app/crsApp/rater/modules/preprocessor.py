@@ -17,7 +17,7 @@ def out_pickle(pickle_path, pick_name, variable_name):
 
 
 nltk_word_set = set(words.words())
-slang_words_set = set(in_pickle(os.getcwd() + "/rater/modules/pickles/", "slang_words_set"))
+slang_words_set = set(in_pickle(os.getcwd() + "/rater/modules/pickles/", "english_slang_words_set"))
 full_word_set = nltk_word_set.union(slang_words_set)
 
 stop_words = set(stopwords.words('english'))
@@ -45,8 +45,8 @@ def clean_tokens(tokens_list):
     return cleaned_tokens
 
 # Clean the input text file and tokenize it
-def preprocess_file(file_path):
-    input_file = open(file_path, "r")
+def preprocess_file(full_file_path):
+    input_file = open(full_file_path, "r")
 
     text = input_file.read()
     cleaned_text = clean_text(text)
