@@ -33,16 +33,23 @@ def clean_text(text):
 
 # Cleaning function for each token
 def clean_tokens(tokens_list):
-    cleaned_tokens = []
+    cleaned_tokens = [] # contains the english, meaningful words
+    number_of_useful_words_in_doc = 0 # the number of meaningful, english and non english words
+    number_of_non_english_words = 0 # the number of meaningful, non english words
     for token in tokens_list:
         token = token.lower()
         if token.isalpha():
             if token not in stop_words:
                 if len(token) > 1:
+                    number_of_useful_words_in_doc += 1
                     if (token in full_word_set) or (wordnet.synsets(token) != []):
                         cleaned_tokens.append(token)
+                    else:
+                        number_of_non_english_words += 1
 
-    return cleaned_tokens
+    percentage_of_non_english_words = number_of_non_english_words / number_of_useful_words_in_doc
+    return cleaned_tokens, percentage_of_non_english_words
+
 
 # Tokenize and pickle, takes the directory that contatins
 def preprocess_file(directory_path, file_name,utf_8):
@@ -55,7 +62,7 @@ def preprocess_file(directory_path, file_name,utf_8):
     text = input_file.read()
     cleaned_text = clean_text(text)
     tokens = word_tokenize(cleaned_text)
-    cleaned_tokens = clean_tokens(tokens)
+    cleaned_tokens = clean_tokens(tokens)[0] # take the list cleaned_tokens
     return cleaned_tokens
 
 
