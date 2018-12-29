@@ -24,7 +24,6 @@ def convert_to_text(file_path):
     
     try:
         #try to open the file
-        print(file_path)
         input_file = open(os.getcwd() + file_path, "r")
         try:
             text = textract.process(os.getcwd() + file_path)

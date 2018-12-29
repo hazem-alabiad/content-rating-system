@@ -8,8 +8,11 @@ from django.core.files.storage import FileSystemStorage
 from .modules import preprocessor
 import os
 from datasketch import MinHash
+from .models import Book
 
-
+import datetime
+from pytz import timezone
+import ast
 
 # Create your views here.
 class Rater(TemplateView):
@@ -35,8 +38,6 @@ class Rater(TemplateView):
 
             filename = fs.save(input_file.name, input_file)
             uploaded_file_url = fs.url(filename)
-
-            print(uploaded_file_url)        
             
             #Convert the file to text, if it contain non english words or nothing or in not supported format. then save it
             text = converter.convert_to_text(uploaded_file_url)
@@ -73,30 +74,99 @@ class Rater(TemplateView):
                 return render(request, "./rater/error.html", context=response)
             
             else:
-                #First step, preprocess the book
+                #First step, check if the book is English or not
+                
+                #Second step, preprocess the book
                 book_tokens = preprocessor.preprocess_file(save_txt_file_path)
 
                 if save_or_not == "dont_save":
                     fs.delete(filename)
+                    new_book_rating = ""
+                    
+                    if new_book_rating == "1":
+                        rating  = "Appropriate for children",
+                    elif new_book_rating == "0":
+                        rating  = "Not Appropriate for children",
+
+                    response = {
+                        "message" : "The rating of the book is ",
+                        "rating"  : rating,
+                        "book_name" : filename
+                    }
                 
                 output = open(filename + ".txt", "w")
 
                 output.write(str(book_tokens))
 
-                #First step check if the book is already stored in the database, if so return the rating input_book
-
+                #Third step calculate the min hash of the tokens
+                new_book_hash = MinHash(num_perm=256)
+                for token in book_tokens:
+                    new_book_hash.update(token.encode("utf8"))
                 
-                #Second step convert the file, if it is in the correct format, if not return error
+                # Fourth step, Check if there is similar rated book in the database, by comparing the hashes and if the two hash has jasccard similarity more than 0.8
+                # then the two books havethe same rating
+                # finally return the ground-truth rating if aviable. If not return the predicated one. 
+                books = Book.objects.all()
+                for book in books:
+                    book_hash_values = book.book_hash
+                    book_hash_values= ast.literal_eval(book_hash_values)
 
-                #Third preprocess the file and get its token and send to the model
+                    #Convert the stored string min hash to min hash object
+                    book_min_hash_object = MinHash(num_perm=256,hashvalues=book_hash_values)
 
-                #Fourth, get the rating and return it to the user
+                    if new_book_hash.jaccard(book_min_hash_object) >= 0.8 :
+                        
+                        if book.ground_truth_label != "":
+                            new_book_rating =  book.ground_truth_label
+
+                            if new_book_rating == "1":
+                                rating  = "Appropriate for children",
+                            elif new_book_rating == "0":
+                                rating  = "Not Appropriate for children",
+
+                            response = {
+                                "message" : "The rating of the book is ",
+                                "rating"  : rating,
+                                "book_name" : filename
+                            }
+                            return render(request, "./rater/success.html", context=response)
+                        else:
+                            new_book_rating =  book.predicted_label
+
+                            if new_book_rating == "1":
+                                rating  = "Appropriate for children",
+                            elif new_book_rating == "0":
+                                rating  = "Not Appropriate for children",
+
+                            print("same book as before")
+
+                            response = {
+                                "message" : "The rating of the book is ",
+                                "rating"  : rating,
+                                "book_name" : filename
+                            }
+                            
+                            return render(request, "./rater/success.html", context=response)
+                        
+                    else:
+                        pass
+
+                #Fifth step. If no similar book is uploaded, rate the book and save it
+                new_book_rating = "1"
+                
+                #Save the book with time equal to the time in the gmt timezone
+                new_book = Book(book_hash=str(list(new_book_hash.hashvalues)), book_name = filename, upload_date=datetime.datetime.now(), update_date=datetime.datetime.now(), predicted_label=new_book_rating, ground_truth_label="")
+                new_book.save()
+
+                if new_book_rating == "1":
+                    rating  = "Appropriate for children",
+                elif new_book_rating == "0":
+                    rating  = "Not Appropriate for children",
+                
                 response = {
                     "message" : "The rating of the book is ",
-                    "rating"  : "Appropriate for children",
+                    "rating"  : rating,
                     "book_name" : filename
                 }
-                return render(request, "./rater/success.html", context=response)
 
-    def addBook(self, book_tokens, book_name):
-        return ""
+                return render(request, "./rater/success.html", context=response)

@@ -7,5 +7,5 @@ class Book(models.Model):
 	upload_date=models.DateTimeField()
 	update_date=models.DateTimeField()
 
-	ground_truth_label =models.IntegerField(blank=True)
-	predicted_label=models.IntegerField(blank=True)
+	ground_truth_label =models.CharField(max_length=10)
+	predicted_label=models.CharField(max_length=10)

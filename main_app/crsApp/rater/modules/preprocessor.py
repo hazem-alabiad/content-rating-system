@@ -39,6 +39,7 @@ def clean_tokens(tokens_list):
         if token.isalpha():
             if token not in stop_words:
                 if len(token) > 1:
+                    
                     if (token in full_word_set) or (wordnet.synsets(token) != []):
                         cleaned_tokens.append(token)
 
