@@ -23,8 +23,6 @@ class Rater(TemplateView):
         2- The uploaded books is not in right format
         3- The uploaded file is corrupted or no text can be extracted from it
         4- 
-    
-    
     """
     def post(self, request):
         if request.FILES["uploaded_book"]:
@@ -73,11 +71,19 @@ class Rater(TemplateView):
                 }
                 return render(request, "./rater/error.html", context=response)
             
-            else:
-                #First step, check if the book is English or not
-                
-                #Second step, preprocess the book
-                book_tokens = preprocessor.preprocess_file(save_txt_file_path)
+            else:         
+
+                #First step, preprocess the book and check it is fully english or not
+                book_tokens, percent_of_non_english_words = preprocessor.preprocess_file(save_txt_file_path)
+
+                print(percent_of_non_english_words)
+
+                if percent_of_non_english_words > 0.2 :
+                    message = "Please submit an English book, for now we can not handle non-English books"
+                    response = {
+                    "message" : message
+                    }
+                    return render(request, "./rater/error.html", context=response)
 
                 if save_or_not == "dont_save":
                     fs.delete(filename)

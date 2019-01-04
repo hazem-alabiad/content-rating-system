@@ -62,7 +62,7 @@ def preprocess_file(directory_path, file_name,utf_8):
     text = input_file.read()
     cleaned_text = clean_text(text)
     tokens = word_tokenize(cleaned_text)
-    cleaned_tokens = clean_tokens(tokens)[0] # take the list cleaned_tokens
+    cleaned_tokens, percentage_of_non_english_words= clean_tokens(tokens)[0] # take the list cleaned_tokens
     return cleaned_tokens
 
 

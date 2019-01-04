@@ -17,6 +17,7 @@ def convert_to_text(file_path):
     except:
         return "01"
 
+    #Please add the srt support
     supported_formats = ["pdf", "txt", "equb", "PDF", "TXT", "EQUB"]
 
     if file_format not in supported_formats:
