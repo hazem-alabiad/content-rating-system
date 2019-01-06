@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
-from .models import Feedback
+from .models import Feedbacks
 import datetime
 
 class Feedback(TemplateView):
@@ -11,8 +11,9 @@ class Feedback(TemplateView):
         feedback_email = request.POST.get("email")
         feedback_book_name = request.POST.get("book_name")
         
-        new_feedback = Feedback(upload_date = datetime.datetime.now(), email=feedback_email, content=feedback_message)
+        new_feedback = Feedbacks(upload_date = datetime.datetime.now(), email=feedback_email, content=feedback_message, book_name=feedback_book_name)
 
+        new_feedback.save()
 
         response = {
             "message" : "Thanks you for your feedback, we will definitely consider it in improving our system"

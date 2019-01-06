@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% load static %}
+  <style>
+    body {
+    background-image: url(" static/images/books.jpg");
+  }
+  </style>
+  <title>Automated Rating For Kids Book</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+</head>
+
+<body>
+  <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="btn btn-danger navbar-btn" href="#">AHMA</a>
+      </div>
+      <ul class="nav navbar-nav">
+        <li><a href="../">Home</a></li>
+        <li class="active"><a href="">Search</a></li>
+        <li><a href="../aboutUs">About Us</a></li>
+        <li><a href="../contactUs">Contact Us</a></li>
+
+      </ul>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="jumbotron">
+      <h1>Automated Rating For Kids Book</h1>
+    </div>
+    <form class="center-block" id="input_form" method="POST" enctype="multipart/form-data" action="./query">
+      {% csrf_token %}
+      <div class="form-group mx-sm-3 mb-2">
+        <input type="text" class="form-control" id="input_book_name" placeholder="Please Entre A Book Name" name="input_book_name"
+          required>
+      </div>
+      <button type="submit" class="btn btn-primary" id="submit_button" style="width:180px"><strong>Search</strong></button>
+    </form>
+    <br>
+    {% if success %}
+    <div>
+      <ul class="list-group">
+        {% for book_obj in books %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          {{ book_obj.book_name }}
+          <span class="badge badge-primary badge-pill">{{ book_obj.book_rating }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% elif not_sccuess %}
+    <br>
+    <div class="alert alert-danger">
+      {{message}}
+    </div>
+    {% endif %}
+  </div>
+  </div>
+</body>
+
+</html>
+<!-- <script lang="javascript">
+      window.CSRF_TOKEN = "{{ csrf_token }}"
+</script>
+<script lang="javascript">
+    $(document).ready(function () {
+      $("#input_form").on("submit", function (event) {
+        event.preventDefault();
+        const selected_file = $("#input_book")[0].files[0];
+        console.log(selected_file);
+        $.ajax({
+          url : "/rate/",
+          type : "POST",
+          data : {
+            "file": "selected_file",
+             csrfmiddlewaretoken: '{{ csrf_token }}',
+          },
+          success: function(){
+            console.log("request is done");
+          },
+          async : false,
+        });
+  
+        /* var oReq = new XMLHttpRequest();
+        oReq.open("POST", "/rate/", true);
+        oReq.onload = function (oEvent) {
+          console.log("file_uploaded!");
+        };
+  
+        oReq.send(file);
+      }); */
+    });
+  });
+
+  </script> -->

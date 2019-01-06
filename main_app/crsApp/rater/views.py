@@ -6,6 +6,7 @@ from .modules import converter
 from django.core.files.storage import FileSystemStorage
 
 from .modules import preprocessor
+from .modules import classifier
 import os
 from datasketch import MinHash
 from .models import Book
@@ -13,6 +14,7 @@ from .models import Book
 import datetime
 from pytz import timezone
 import ast
+import re
 
 # Create your views here.
 class Rater(TemplateView):
@@ -27,32 +29,30 @@ class Rater(TemplateView):
     def post(self, request):
         if request.FILES["uploaded_book"]:
             #Save the file to the raw file dir under "basedir + /media"
-            #Note: i did not check if previously books with the same name has been uploaded, because user can have book is incorect name
+            #Note: i did not check if previously books with the same name has been uploaded, because user can have book that has incorect name
             input_file = request.FILES['uploaded_book']
             save_or_not = request.POST.get("save")
 
-            input_file_name = input_file.name
-            fs = FileSystemStorage()     #For raw books
-
+            fs = FileSystemStorage()    
+            input_file.name = re.sub("(\s|\t|\[|\]|\(|\)|\,|\{|\}|\<|\>)", "_", input_file.name)
             filename = fs.save(input_file.name, input_file)
             uploaded_file_url = fs.url(filename)
             
-            #Convert the file to text, if it contain non english words or nothing or in not supported format. then save it
+            #First, Convert the file to text, then save it
             text = converter.convert_to_text(uploaded_file_url)
-            
             save_txt_file_path = os.getcwd() + "/media2/" + filename.split(".")[0] + ".txt"
             saved_txt_file = open(save_txt_file_path, "w")
             saved_txt_file.write(str(text))
             saved_txt_file.close()            
         
-
+                #if the user don't want to his book to be saved in our database, delete it
             if save_or_not == "dont_save":
                 fs.delete(filename)
 
-            #Return error message if the text extraing process was not successful   
+                #Return error message if the text extraing process was not successful   
             if text == "00":
                 response = {
-                    "message" : "Error while opening the book, make sure that the book exist and its name does not contain spaces!"
+                    "message" : "Error while opening the book, make sure that the book exist and its name does not contain special characters rather than english characters"
                 }
                 return render(request, "./rater/error.html", context=response)
             elif text == "01":
@@ -62,7 +62,7 @@ class Rater(TemplateView):
                 return render(request, "./rater/error.html", context=response)
             elif text == "10":
                 response = {
-                    "message" : "Book has a format rather than pdf, txt or equb, please try another book!"
+                    "message" : "Book has a format rather than pdf, txt or epub, please try another book!"
                 }
                 return render(request, "./rater/error.html", context=response)
             elif text == "11":
@@ -73,10 +73,11 @@ class Rater(TemplateView):
             
             else:         
 
-                #First step, preprocess the book and check it is fully english or not
+                #Second, preprocess the book and check it is fully english or not depending on its tokens
                 book_tokens, percent_of_non_english_words = preprocessor.preprocess_file(save_txt_file_path)
-
-                print(percent_of_non_english_words)
+                
+                if save_or_not == "dont_save":
+                    os.remove(save_txt_file_path)
 
                 if percent_of_non_english_words > 0.2 :
                     message = "Please submit an English book, for now we can not handle non-English books"
@@ -85,33 +86,13 @@ class Rater(TemplateView):
                     }
                     return render(request, "./rater/error.html", context=response)
 
-                if save_or_not == "dont_save":
-                    fs.delete(filename)
-                    new_book_rating = ""
-                    
-                    if new_book_rating == "1":
-                        rating  = "Appropriate for children",
-                    elif new_book_rating == "0":
-                        rating  = "Not Appropriate for children",
-
-                    response = {
-                        "message" : "The rating of the book is ",
-                        "rating"  : rating,
-                        "book_name" : filename
-                    }
-                
-                output = open(filename + ".txt", "w")
-
-                output.write(str(book_tokens))
-
-                #Third step calculate the min hash of the tokens
+                #Third, Check if there is similar rated book in the database, by comparing the hashes and if the two hash has jasccard similarity more than 0.8
+                # then the two books havethe same rating
+                # finally return the ground-truth rating if aviable. If not return the predicated one. 
                 new_book_hash = MinHash(num_perm=256)
                 for token in book_tokens:
                     new_book_hash.update(token.encode("utf8"))
                 
-                # Fourth step, Check if there is similar rated book in the database, by comparing the hashes and if the two hash has jasccard similarity more than 0.8
-                # then the two books havethe same rating
-                # finally return the ground-truth rating if aviable. If not return the predicated one. 
                 books = Book.objects.all()
                 for book in books:
                     book_hash_values = book.book_hash
@@ -122,12 +103,16 @@ class Rater(TemplateView):
 
                     if new_book_hash.jaccard(book_min_hash_object) >= 0.8 :
                         
-                        if book.ground_truth_label != "":
+                        if book.ground_truth_label != -1:
                             new_book_rating =  book.ground_truth_label
 
-                            if new_book_rating == "1":
+                            os.remove(save_txt_file_path)
+                            fs.delete(filename)
+
+
+                            if new_book_rating == 1:
                                 rating  = "Appropriate for children",
-                            elif new_book_rating == "0":
+                            elif new_book_rating == 0:
                                 rating  = "Not Appropriate for children",
 
                             response = {
@@ -139,9 +124,12 @@ class Rater(TemplateView):
                         else:
                             new_book_rating =  book.predicted_label
 
-                            if new_book_rating == "1":
+                            os.remove(save_txt_file_path)
+                            fs.delete(filename)
+
+                            if new_book_rating == 1:
                                 rating  = "Appropriate for children",
-                            elif new_book_rating == "0":
+                            elif new_book_rating == 0:
                                 rating  = "Not Appropriate for children",
 
                             print("same book as before")
@@ -158,15 +146,15 @@ class Rater(TemplateView):
                         pass
 
                 #Fifth step. If no similar book is uploaded, rate the book and save it
-                new_book_rating = "1"
+                rating = classifier.classify(book_tokens)
                 
                 #Save the book with time equal to the time in the gmt timezone
-                new_book = Book(book_hash=str(list(new_book_hash.hashvalues)), book_name = filename, upload_date=datetime.datetime.now(), update_date=datetime.datetime.now(), predicted_label=new_book_rating, ground_truth_label="")
+                new_book = Book(book_hash=str(list(new_book_hash.hashvalues)), book_name = filename, upload_date=datetime.datetime.now(), update_date=datetime.datetime.now(), predicted_label=rating, ground_truth_label=-1)
                 new_book.save()
 
-                if new_book_rating == "1":
+                if rating == 1:
                     rating  = "Appropriate for children",
-                elif new_book_rating == "0":
+                elif rating == 0:
                     rating  = "Not Appropriate for children",
                 
                 response = {

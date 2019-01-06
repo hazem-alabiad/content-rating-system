@@ -1,10 +1,10 @@
 How to install textract library to use it for text extraction from different books format
-   1-1 install libpcre.so.1 to the defulat lib dir
-   1-2 install SWİG libraary from it source
+   1-1 install libpcre.so.1 to the defulat lib dir          (May work without it)
+   1-2 install SWİG libraary from its website
    1-3 Run "apt-get install python-dev libxml2-dev libxslt1-dev antiword unrtf poppler-utils pstotext tesseract-ocr \
 flac ffmpeg lame libmad0 libsox-fmt-mp3 sox libjpeg-dev"
    1-4 Run "sudo apt-get install libpulse-dev"
-   1-5 Finally Run "pip install textract"
+   1-5 Finally Run "pip install textract" inside your virtual environment
 
 
 

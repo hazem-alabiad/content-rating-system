@@ -1,5 +1,6 @@
 import pickle
 import numpy as np
+import os
 
 def in_pickle(pick_name):
     with open(pick_name + ".pkl", "rb") as pkl:
@@ -22,8 +23,8 @@ def average_word_vectors(words, model, vocabulary, num_features):
 
     return feature_vector
 
-svm_classifier = in_pickle("./pickles/svm_final_classifier")
-word2vec_model = in_pickle("./pickles/word2vecModel_glove_6b_300d")
+svm_classifier = in_pickle( os.getcwd() + "/rater/modules/pickles/svm_final_classifier")
+word2vec_model = in_pickle( os.getcwd() + "/rater/modules/pickles/word2vecModel_glove_6b_300d")
 
 vocabulary = set(word2vec_model.wv.vocab)
 
