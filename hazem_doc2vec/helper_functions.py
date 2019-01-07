@@ -30,3 +30,4 @@ def shuffle_corpus_labels(corpus, labels):
     random.shuffle(z)
     c, l = zip(*z)
     return c, l
+

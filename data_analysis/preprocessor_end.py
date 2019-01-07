@@ -17,7 +17,7 @@ def out_pickle(pickle_path, pick_name, variable_name):
         pickle.dump(variable_name, pkl)
 
 nltk_word_set = set(words.words())
-slang_words_set = set(in_pickle("C:/Users/Abdo/Project/pickle_files/", "slang_words_set"))
+slang_words_set = set(in_pickle("/home/hazem/crs/data/", "english_slang_words_set"))
 full_word_set = nltk_word_set.union(slang_words_set)
 
 stop_words = set(stopwords.words('english'))
