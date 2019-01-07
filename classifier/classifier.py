@@ -22,15 +22,19 @@ def average_word_vectors(words, model, vocabulary, num_features):
 
     return feature_vector
 
-svm_classifier = in_pickle("svm_final_classifier")
+svm_classifier = in_pickle("svm_final_classifier_with_probability")
 word2vec_model = in_pickle("word2vecModel_glove_6b_300d")
 
 vocabulary = set(word2vec_model.wv.vocab)
 
 # takes a list of tokens (words)
-# returns the predicted classification of the document (0: not suitable, 1: suitable)
+# returns the predicted classification of the document (0: not suitable, 1: suitable),
+#                                                          0 label, 1 label
+# and returns the probability of the two labels, example: [0.3      0.7]
 def classify(list_of_words):
     text_vector_representation = average_word_vectors(list_of_words, word2vec_model, vocabulary, 300)
+
+    prob_prediction = svm_classifier.predict_proba([text_vector_representation])
     prediction = svm_classifier.predict([text_vector_representation])
 
-    return prediction
+    return prediction, prob_prediction
