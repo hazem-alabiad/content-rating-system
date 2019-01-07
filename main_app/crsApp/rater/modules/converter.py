@@ -10,7 +10,7 @@ def convert_to_text(file_path):
         Error codes:
             1- "01" > file corraped or with no format
             2- "10" > file has format rather than pdf, txt or equb
-            3- "11" > Error while extracting text from the 
+            3- "11" > Error while extracting text from the book
             4- "00" > Error while opening the file
     """
     try:

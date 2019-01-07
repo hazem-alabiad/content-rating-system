@@ -57,7 +57,7 @@ class Rater(TemplateView):
                 return render(request, "./rater/error.html", context=response)
             elif text == "01":
                 response = {
-                    "message" : "Book is corraped or with no format, please try another book!"
+                    "message" : "Book with no format, please try another book with format!"
                 }
                 return render(request, "./rater/error.html", context=response)
             elif text == "10":
@@ -118,7 +118,8 @@ class Rater(TemplateView):
                             response = {
                                 "message" : "The rating of the book is ",
                                 "rating"  : rating,
-                                "book_name" : filename
+                                "book_name" : filename,
+                                "book_id" : book.pk
                             }
                             return render(request, "./rater/success.html", context=response)
                         else:
@@ -137,7 +138,8 @@ class Rater(TemplateView):
                             response = {
                                 "message" : "The rating of the book is ",
                                 "rating"  : rating,
-                                "book_name" : filename
+                                "book_name" : filename,
+                                "book_id" : book.pk
                             }
                             
                             return render(request, "./rater/success.html", context=response)
@@ -160,7 +162,8 @@ class Rater(TemplateView):
                 response = {
                     "message" : "The rating of the book is ",
                     "rating"  : rating,
-                    "book_name" : filename
+                    "book_name" : filename,
+                    "book_id" : new_book.pk
                 }
 
                 return render(request, "./rater/success.html", context=response)
