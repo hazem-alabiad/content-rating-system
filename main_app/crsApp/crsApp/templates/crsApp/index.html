@@ -2,9 +2,10 @@
 <html lang="en">
 
 <head>
+  {% load static %}
   <style>
     body {
-    background-image: url("water.jpg");
+    background-image: url("static/images/water.jpg");
   }
   </style>
   <title>Automated Rating For Kids Book</title>
@@ -24,6 +25,7 @@
       </div>
       <ul class="nav navbar-nav">
         <li class="active"><a href="">Home</a></li>
+        <li><a href="search">Search</a></li>
         <li><a href="aboutUs">About Us</a></li>
         <li><a href="contactUs">Contact Us</a></li>
 
@@ -43,8 +45,8 @@
       <button type="submit" class="btn btn-primary mb-2" id="submit_button">Upload</button>
       <br>
       <br>
-      <input type="radio" name="save" value="save" checked><strong>&nbsp Save the book in our database for later improvement of the system</strong><br>
-      <input type="radio" name="save" value="dont_save"><strong>&nbsp Don't save the book in our database</strong>
+      <input type="radio" name="save" value="save" checked><strong><font color="white">&nbsp Save the book in our database for later improvement of the system</font></strong><br>
+      <input type="radio" name="save" value="dont_save"><strong><font color="white">&nbsp Don't save the book in our database</font></strong>
     </form>
     <br>
   </div>

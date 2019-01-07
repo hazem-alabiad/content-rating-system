@@ -1,6 +1,9 @@
 import textract
 import encodings
 import os
+import re
+
+
 
 def convert_to_text(file_path):
     """
@@ -12,21 +15,23 @@ def convert_to_text(file_path):
     """
     try:
         file_name = file_path.split("/")[2]
-        file_format = file_name.split(".")[1]
+        file_format = file_name.split(".")[len(file_name.split("."))-1]
     
     except:
         return "01"
 
     #Please add the srt support
-    supported_formats = ["pdf", "txt", "equb", "PDF", "TXT", "EQUB"]
+    supported_formats = ["pdf", "txt", "epub", "PDF", "TXT", "EUB"]
 
     if file_format not in supported_formats:
         return "10"
     
     try:
         #try to open the file
+        print(file_path)
         input_file = open(os.getcwd() + file_path, "r")
         try:
+            print(file_path)
             text = textract.process(os.getcwd() + file_path)
             text = text.decode("utf-8", 'ignore')
             return text
