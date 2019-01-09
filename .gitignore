@@ -16,3 +16,5 @@ venv
 data
 
 *.npy
+
+word2vecModel_glove_6b_300d.pkl
