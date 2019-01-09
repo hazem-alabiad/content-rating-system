@@ -3,8 +3,6 @@ import encodings
 import os
 import re
 
-
-
 def convert_to_text(file_path):
     """
         Error codes:
