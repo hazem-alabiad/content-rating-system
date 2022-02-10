@@ -31,7 +31,7 @@
     "bootstrap": "^4.1.3",
     "jquery": "^3.5.0",
     "lite-server": "^2.4.0",
-    "node-sass": "^4.10.0",
+    "node-sass": "^7.0.0",
     "onchange": "^5.1.2",
     "parallelshell": "^3.0.2",
     "popper.js": "^1.14.5"
